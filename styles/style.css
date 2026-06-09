@@ -53,11 +53,24 @@ body {
     align-items: center;
     justify-content: center;
     overflow-y: auto;
+    overflow-x: hidden;
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
     transition: opacity 0.7s ease, transform 0.7s ease, visibility 0.7s ease;
-    padding: 20px;
+    padding: clamp(20px, 5vh, 60px) 20px;
     will-change: opacity, transform;
+}
+
+/* 兼容短屏：当内容超过高度时，确保从顶部开始排列以便滚动查看全部内容 */
+@media (max-height: 500px) {
+    .page {
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .page-1, .page-2, .page-3 {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
 }
 
 .page-hidden {
@@ -182,11 +195,13 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 20px;
+    gap: clamp(10px, 3vh, 24px);
+    width: 100%;
 }
 
 .birthday-cake-icon {
-    font-size: 90px;
+    font-size: clamp(60px, 15vh, 90px);
+    flex-shrink: 0;
     animation: cakeBounce 2.5s ease-in-out infinite;
     filter: drop-shadow(0 12px 28px rgba(180, 100, 130, 0.35));
     cursor: pointer;
@@ -323,13 +338,15 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 24px;
+    gap: clamp(12px, 4vh, 28px);
+    width: 100%;
     max-width: 620px;
     padding: 20px;
 }
 
 .big-heart {
-    font-size: 100px;
+    font-size: clamp(60px, 16vh, 100px);
+    flex-shrink: 0;
     animation: heartBeat 1.3s ease-in-out infinite;
     filter: drop-shadow(0 10px 30px rgba(200, 80, 110, 0.4));
     cursor: pointer;
@@ -428,14 +445,16 @@ body {
     background: radial-gradient(ellipse at 50% 30%, #fef8f5 0%, #fdf0ed 30%, #fbe8e5 60%, #f8e0dd 100%);
     flex-direction: column;
     z-index: 1;
-    padding: 30px 16px 40px;
-    gap: 20px;
+    padding: clamp(20px, 5vh, 40px) 16px;
+    gap: clamp(10px, 3vh, 20px);
+    justify-content: flex-start; /* 确保在小屏幕从顶端对齐 */
 }
 
 .page-3 .timeline-header {
     position: relative;
     z-index: 2;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .page-3 .timeline-header h2 {
@@ -487,6 +506,8 @@ body {
     width: 100%;
     max-width: 900px;
     overflow: hidden;
+    flex-shrink: 0;
+    min-height: 100px; /* 保证时间轴节点不被彻底压扁 */
 }
 
 .timeline-scroll {
@@ -494,7 +515,7 @@ body {
     gap: 14px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 24px 10px 20px;
+    padding: 10px 10px 15px;
     scrollbar-width: thin;
     scrollbar-color: #e0b8c5 transparent;
     -webkit-overflow-scrolling: touch;
@@ -502,6 +523,7 @@ body {
     scroll-snap-type: x proximity;
     position: relative;
     touch-action: pan-y;
+    min-height: 90px;
 }
 
 .timeline-scroll:active {
@@ -605,19 +627,20 @@ body {
     z-index: 2;
     width: 100%;
     max-width: 580px;
-    min-height: 130px;
+    min-height: 120px;
     background: #fffdfb;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
-    padding: 24px 28px;
+    padding: clamp(15px, 3vh, 24px) clamp(16px, 4vw, 28px);
     text-align: center;
     transition: all var(--transition-smooth);
     border: 1px solid rgba(220, 170, 185, 0.35);
+    flex-shrink: 0;
 }
 
 .timeline-detail-area .detail-emoji {
-    font-size: 50px;
-    margin-bottom: 8px;
+    font-size: clamp(32px, 8vh, 50px);
+    margin-bottom: 4px;
     animation: detailEmojiPop 0.5s ease;
 }
 
@@ -655,12 +678,13 @@ body {
     display: flex;
     gap: 16px;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .btn-nav {
-    min-width: 88px;
-    padding: 10px 18px;
-    height: 44px;
+    min-width: 80px;
+    padding: 8px 16px;
+    height: 40px;
     border-radius: 999px;
     border: 1px solid rgba(201, 125, 146, 0.55);
     background: #ffffff;
@@ -687,12 +711,12 @@ body {
 }
 
 .btn-auto-play {
-    padding: 10px 22px;
+    padding: 8px 20px;
     border-radius: 50px;
     border: 1px solid rgba(201, 125, 146, 0.55);
     background: #ffffff;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     letter-spacing: 0.04em;
     color: #8b4a5a;
     font-family: inherit;
@@ -718,18 +742,19 @@ body {
 .btn-back-top {
     position: relative;
     z-index: 2;
-    padding: 10px 24px;
+    padding: 8px 22px;
     border-radius: 50px;
     border: 1px solid rgba(201, 125, 146, 0.55);
     background: #ffffff;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     letter-spacing: 0.04em;
     color: #8b5a65;
     font-family: inherit;
     transition: all var(--transition-smooth);
     margin-top: 4px;
     box-shadow: 0 6px 18px rgba(180, 120, 140, 0.14);
+    flex-shrink: 0;
 }
 
 .btn-back-top:hover {
