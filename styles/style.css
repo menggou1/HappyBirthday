@@ -472,30 +472,35 @@ body {
     margin-top: 4px;
 }
 
-.timeline-axis {
-    width: min(100%, 900px);
+/* 内部滚轴线 */
+.timeline-axis-track {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 5px; /* 放在按钮文字下方 */
+    height: 2px;
+    z-index: 0;
+    pointer-events: none;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 0;
+    padding: 0 30px;
 }
 
 .timeline-axis-line {
-    flex: 1 1 auto;
+    width: 100%;
     position: relative;
     height: 2px;
     background: linear-gradient(90deg, rgba(211, 149, 168, 0.2), #d395a8, rgba(211, 149, 168, 0.2));
     border-radius: 999px;
-    min-width: 120px;
 }
 
 .timeline-axis-line::after {
     content: '';
     position: absolute;
-    right: -1px;
+    right: -2px;
     top: 50%;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-top: 2px solid #d395a8;
     border-right: 2px solid #d395a8;
     transform: translateY(-50%) rotate(45deg);
@@ -508,7 +513,7 @@ body {
     max-width: 900px;
     overflow: hidden;
     flex-shrink: 0;
-    min-height: 100px; /* 保证时间轴节点不被彻底压扁 */
+    min-height: 150px; /* 增加高度以容纳发光特效 */
 }
 
 .timeline-scroll {
@@ -516,7 +521,7 @@ body {
     gap: 14px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 10px 10px 15px;
+    padding: 35px 10px 20px; /* 增加顶部边距，防止发光特效被遮挡 */
     scrollbar-width: thin;
     scrollbar-color: #e0b8c5 transparent;
     -webkit-overflow-scrolling: touch;
@@ -768,7 +773,7 @@ body {
 @media (max-width: 768px) {
     .page { padding: 16px; }
     .page-3 { padding: 20px 10px 30px; gap: 14px; }
-    .timeline-scroll { padding: 18px 6px 16px; gap: 10px; }
+    .timeline-scroll { padding: 30px 6px 16px; gap: 10px; }
     .timeline-node-wrapper { min-width: 64px; }
     .timeline-node-dot { width: 38px; height: 38px; font-size: 18px; border-width: 2.5px; }
     .timeline-node-label { font-size: 0.75rem; }
@@ -794,11 +799,6 @@ body {
         padding-bottom: 36px;
     }
 
-    .timeline-axis {
-        width: 100%;
-        padding: 10px 4px 0;
-    }
-
     .timeline-scroll {
         touch-action: pan-y;
     }
@@ -813,6 +813,6 @@ body {
     .btn-to-timeline { padding: 12px 30px; font-size: 1rem; }
     .timeline-node-dot { width: 32px; height: 32px; font-size: 15px; border-width: 2px; }
     .timeline-node-label { font-size: 0.7rem; }
-    .timeline-scroll { gap: 6px; padding: 14px 4px 12px; }
+    .timeline-scroll { gap: 6px; padding: 25px 4px 12px; }
     .timeline-node-wrapper { min-width: 52px; gap: 6px; }
 }

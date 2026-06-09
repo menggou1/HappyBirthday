@@ -209,6 +209,13 @@
 
     function buildTimelineNodes() {
         timelineScroll.innerHTML = '';
+        
+        // 创建背景连接线
+        const axisTrack = document.createElement('div');
+        axisTrack.className = 'timeline-axis-track';
+        axisTrack.innerHTML = '<span class="timeline-axis-line"></span>';
+        timelineScroll.appendChild(axisTrack);
+
         timelineData.forEach((data, index) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'timeline-node-wrapper';
@@ -231,6 +238,14 @@
                 });
             }
             timelineScroll.appendChild(wrapper);
+        });
+
+        // 确保连接线宽度覆盖所有节点
+        requestAnimationFrame(() => {
+            const track = timelineScroll.querySelector('.timeline-axis-track');
+            if (track) {
+                track.style.width = Math.max(timelineScroll.scrollWidth, timelineScroll.offsetWidth) + 'px';
+            }
         });
     }
 
