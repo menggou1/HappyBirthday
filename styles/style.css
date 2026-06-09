@@ -650,6 +650,39 @@ body {
     transition: all var(--transition-smooth);
     border: 1px solid rgba(220, 170, 185, 0.35);
     flex-shrink: 0;
+    
+    /* 为多个事件新增 */
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-height: 48vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #e0b8c5 transparent;
+}
+
+.timeline-detail-area::-webkit-scrollbar { width: 4px; }
+.timeline-detail-area::-webkit-scrollbar-track { background: transparent; }
+.timeline-detail-area::-webkit-scrollbar-thumb { background: #e0b8c5; border-radius: 4px; }
+
+.detail-event-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 25px;
+    border-bottom: 1px dashed rgba(220, 170, 185, 0.4);
+    animation: blockFadeIn 0.5s ease backwards;
+}
+
+.detail-event-block:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+@keyframes blockFadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .timeline-detail-area .detail-emoji {

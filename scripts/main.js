@@ -261,18 +261,35 @@
 
     function updateDetailCard(index) {
         const data = timelineData[index];
-        const detailEmoji = timelineDetail.querySelector('.detail-emoji');
-        const detailTitle = timelineDetail.querySelector('.detail-title');
-        const detailDesc = timelineDetail.querySelector('.detail-desc');
-        const detailDate = timelineDetail.querySelector('.detail-date');
+        timelineDetail.innerHTML = '';
+        
+        if (!data || !data.events || data.events.length === 0) {
+            timelineDetail.innerHTML = '<div class="detail-desc">暂时没有回忆哦~</div>';
+            return;
+        }
 
-        detailEmoji.style.animation = 'none';
-        detailEmoji.offsetHeight;
-        detailEmoji.style.animation = 'detailEmojiPop 0.5s ease';
-        detailEmoji.textContent = '回忆';
-        detailTitle.textContent = data.title;
-        detailDesc.textContent = data.desc;
-        detailDate.textContent = data.date;
+        data.events.forEach((evt, idx) => {
+            const block = document.createElement('div');
+            block.className = 'detail-event-block';
+            block.style.animationDelay = (idx * 0.1) + 's';
+            
+            block.innerHTML = `
+                <div class="detail-emoji">${evt.emoji || '✨'}</div>
+                <div class="detail-title">${evt.title}</div>
+                <div class="detail-desc">${evt.desc}</div>
+                <div class="detail-date">${evt.date}</div>
+            `;
+            timelineDetail.appendChild(block);
+            
+            // 为 emoji 添加单独的弹出动画
+            const emojiEl = block.querySelector('.detail-emoji');
+            emojiEl.style.animation = 'none';
+            emojiEl.offsetHeight; // 触发回流
+            emojiEl.style.animation = `detailEmojiPop 0.5s ease ${idx * 0.1}s backwards`;
+        });
+        
+        // 滚动回顶部
+        timelineDetail.scrollTop = 0;
     }
 
     function scrollToNode(index) {
