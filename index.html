@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 生日快乐，我的爱人</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+
+    <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+    <div id="sparklesLayer" class="sparkles-layer" aria-hidden="true"></div>
+
+    <div class="page-container" id="pageContainer">
+        <div class="page page-active page-1" id="page1">
+            <div class="content-wrapper">
+                <div class="birthday-cake-icon" id="cakeIcon" title="点我~">🎂</div>
+                <h1 class="title-main">生 日 快 乐</h1>
+                <p class="subtitle">致我心中最特别的人 ✨</p>
+                <button class="btn-enter" id="btnEnter" aria-label="进入下一页">
+                    💝 点击开启惊喜
+                </button>
+                <p class="click-hint">👆 点一下上面的蛋糕也可以哦</p>
+            </div>
+        </div>
+
+        <div class="page page-hidden page-2" id="page2">
+            <div class="love-content">
+                <div class="big-heart" id="bigHeart" title="我也爱你~">❤️</div>
+                <div class="love-text" id="loveText">
+                    <span class="line">在遇到你之前，</span>
+                    <span class="line">我从未想过有一个人</span>
+                    <span class="line">能让我如此心动。</span>
+                    <span class="line">每一天因你而变得特别，</span>
+                    <span class="line">我爱你，胜过一切言语。💕</span>
+                </div>
+                <button class="btn-to-timeline" id="btnToTimeline" aria-label="查看时间轴">
+                    📖 回顾我们的时光
+                </button>
+                <p class="click-hint">👆 也可以点一下爱心哦</p>
+            </div>
+        </div>
+
+        <div class="page page-hidden page-3" id="page3">
+            <div class="timeline-header">
+                <h2>📅 我们的一年</h2>
+                <p class="sub-header">点击每个月份，查看我们的甜蜜回忆</p>
+            </div>
+            <div class="timeline-outer" id="timelineOuter">
+                <div class="timeline-scroll" id="timelineScroll"></div>
+            </div>
+            <div class="timeline-detail-area" id="timelineDetail">
+                <div class="detail-emoji">💝</div>
+                <div class="detail-title">点击上方月份</div>
+                <div class="detail-desc">来看看我们这一年的故事吧~</div>
+                <div class="detail-date"></div>
+            </div>
+            <div class="timeline-nav-btns">
+                <button class="btn-nav" id="btnPrev" aria-label="上一个" title="上一个回忆">◀</button>
+                <button class="btn-auto-play" id="btnAutoPlay" aria-label="自动播放" title="自动播放回忆">
+                    ▶ 自动播放
+                </button>
+                <button class="btn-nav" id="btnNext" aria-label="下一个" title="下一个回忆">▶</button>
+            </div>
+            <button class="btn-back-top" id="btnBackTop" aria-label="回到开头">
+                🔝 回到祝福页
+            </button>
+        </div>
+    </div>
+
+    <script src="scripts/timeline-data.js" defer></script>
+    <script src="scripts/main.js" defer></script>
+</body>
+</html>
