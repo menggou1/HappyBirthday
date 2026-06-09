@@ -64,8 +64,8 @@ body {
 /* 兼容短屏：当内容超过高度时，确保从顶部开始排列以便滚动查看全部内容 */
 @media (max-height: 500px) {
     .page {
-        align-items: flex-start;
-        justify-content: center;
+        align-items: center; /* 确保水平面始终居中 */
+        justify-content: flex-start;
     }
     .page-1, .page-2, .page-3 {
         padding-top: 40px;
@@ -326,7 +326,7 @@ body {
 }
 
 .page-2 {
-    background: radial-gradient(ellipse at 40% 50%, #fef7f9 0%, #fde8f0 30%, #fadbe8 60%, #f7d0df 100%);
+    background: radial-gradient(ellipse at center, #fef7f9 0%, #fde8f0 30%, #fadbe8 60%, #f7d0df 100%);
     flex-direction: column;
     z-index: 2;
 }
@@ -448,6 +448,7 @@ body {
     padding: clamp(20px, 5vh, 40px) 16px;
     gap: clamp(10px, 3vh, 20px);
     justify-content: flex-start; /* 确保在小屏幕从顶端对齐 */
+    align-items: center; /* 明确强制水平居中 */
 }
 
 .page-3 .timeline-header {
