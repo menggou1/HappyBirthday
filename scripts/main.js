@@ -13,15 +13,12 @@
     const timelineDetail = document.getElementById('timelineDetail');
     const btnPrev = document.getElementById('btnPrev');
     const btnNext = document.getElementById('btnNext');
-    const btnAutoPlay = document.getElementById('btnAutoPlay');
     const heartsLayer = document.getElementById('heartsLayer');
     const sparklesLayer = document.getElementById('sparklesLayer');
 
     let currentPage = 1;
     let isTransitioning = false;
     let activeTimelineIndex = 0;
-    let autoPlayInterval = null;
-    let isAutoPlaying = false;
 
     function isTimelineDisabled(index) {
         return Boolean(timelineData[index] && timelineData[index].disabled);
@@ -178,7 +175,6 @@
 
     function goToPage1() {
         if (currentPage !== 3 || isTransitioning) return;
-        stopAutoPlay();
         switchPage(3, 1);
     }
 
@@ -225,7 +221,7 @@
             }
             wrapper.setAttribute('data-index', index);
             wrapper.innerHTML = `
-                    <div class="timeline-node-dot">${data.emoji}</div>
+                    <div class="timeline-node-dot" aria-hidden="true"></div>
                     <span class="timeline-node-label">${data.month}</span>
                 `;
             if (!data.disabled) {
@@ -261,10 +257,10 @@
         detailEmoji.style.animation = 'none';
         detailEmoji.offsetHeight;
         detailEmoji.style.animation = 'detailEmojiPop 0.5s ease';
-        detailEmoji.textContent = data.emoji;
+        detailEmoji.textContent = '回忆';
         detailTitle.textContent = data.title;
         detailDesc.textContent = data.desc;
-        detailDate.textContent = '📆 ' + data.date;
+        detailDate.textContent = data.date;
     }
 
     function scrollToNode(index) {
@@ -301,90 +297,58 @@
     btnPrev.addEventListener('click', () => navigateTimeline(-1));
     btnNext.addEventListener('click', () => navigateTimeline(1));
 
-    function startAutoPlay() {
-        if (isAutoPlaying) return;
-        isAutoPlaying = true;
-        btnAutoPlay.classList.add('playing');
-        btnAutoPlay.textContent = '停止播放';
-        autoPlayInterval = setInterval(() => {
-            const nextIndex = findNextEnabledIndex(activeTimelineIndex, 1);
-            if (nextIndex !== -1) {
-                setActiveTimelineNode(nextIndex);
-                scrollToNode(nextIndex);
-            } else {
-                const firstEnabledIndex = findFirstEnabledIndex();
-                if (firstEnabledIndex !== -1) {
-                    setActiveTimelineNode(firstEnabledIndex);
-                    scrollToNode(firstEnabledIndex);
-                }
-            }
-        }, 2800);
+    const dragState = {
+        active: false,
+        pointerId: null,
+        startX: 0,
+        startScrollLeft: 0,
+        latestScrollLeft: 0,
+        rafId: 0,
+    };
+
+    function scheduleScrollUpdate() {
+        if (dragState.rafId) return;
+        dragState.rafId = requestAnimationFrame(() => {
+            timelineScroll.scrollLeft = dragState.latestScrollLeft;
+            dragState.rafId = 0;
+        });
     }
 
-    function stopAutoPlay() {
-        isAutoPlaying = false;
-        btnAutoPlay.classList.remove('playing');
-        btnAutoPlay.textContent = '自动播放';
-        if (autoPlayInterval) {
-            clearInterval(autoPlayInterval);
-            autoPlayInterval = null;
-        }
-    }
-
-    btnAutoPlay.addEventListener('click', () => {
-        if (isAutoPlaying) {
-            stopAutoPlay();
-        } else {
-            startAutoPlay();
-        }
-    });
-
-    let isDragging = false;
-    let startX = 0;
-    let scrollLeftStart = 0;
-
-    timelineScroll.addEventListener('mousedown', function(e) {
+    timelineScroll.addEventListener('pointerdown', function(e) {
         if (e.target.closest('.timeline-node-wrapper')) {
             return;
         }
-        isDragging = true;
+        dragState.active = true;
+        dragState.pointerId = e.pointerId;
+        dragState.startX = e.clientX;
+        dragState.startScrollLeft = timelineScroll.scrollLeft;
+        dragState.latestScrollLeft = timelineScroll.scrollLeft;
         timelineScroll.classList.add('dragging');
-        startX = e.pageX - timelineScroll.offsetLeft;
-        scrollLeftStart = timelineScroll.scrollLeft;
+        timelineScroll.setPointerCapture(e.pointerId);
+        timelineScroll.style.scrollBehavior = 'auto';
     });
 
-    document.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - timelineScroll.offsetLeft;
-        const walk = (x - startX) * 1.8;
-        timelineScroll.scrollLeft = scrollLeftStart - walk;
+    timelineScroll.addEventListener('pointermove', function(e) {
+        if (!dragState.active || e.pointerId !== dragState.pointerId) return;
+        const delta = e.clientX - dragState.startX;
+        dragState.latestScrollLeft = dragState.startScrollLeft - delta * 1.2;
+        scheduleScrollUpdate();
     });
 
-    document.addEventListener('mouseup', function() {
-        if (isDragging) {
-            isDragging = false;
-            timelineScroll.classList.remove('dragging');
+    function endTimelineDrag(e) {
+        if (!dragState.active || e.pointerId !== dragState.pointerId) return;
+        dragState.active = false;
+        dragState.pointerId = null;
+        timelineScroll.classList.remove('dragging');
+        timelineScroll.style.scrollBehavior = '';
+        if (dragState.rafId) {
+            cancelAnimationFrame(dragState.rafId);
+            dragState.rafId = 0;
         }
-    });
+    }
 
-    timelineScroll.addEventListener('touchstart', function(e) {
-        if (e.target.closest('.timeline-node-wrapper')) return;
-        isDragging = true;
-        startX = e.touches[0].pageX - timelineScroll.offsetLeft;
-        scrollLeftStart = timelineScroll.scrollLeft;
-    }, { passive: true });
-
-    timelineScroll.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        const x = e.touches[0].pageX - timelineScroll.offsetLeft;
-        const walk = (x - startX) * 1.8;
-        timelineScroll.scrollLeft = scrollLeftStart - walk;
-    }, { passive: true });
-
-    timelineScroll.addEventListener('touchend', function() {
-        isDragging = false;
-    });
+    timelineScroll.addEventListener('pointerup', endTimelineDrag);
+    timelineScroll.addEventListener('pointercancel', endTimelineDrag);
 
     function init() {
         startHeartRain();
