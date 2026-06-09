@@ -477,13 +477,13 @@ body {
     position: absolute;
     left: 0;
     width: 100%;
-    bottom: 5px; /* 放在按钮文字下方 */
+    bottom: 12px; /* 调整位置到按钮下方 */
     height: 2px;
     z-index: 0;
     pointer-events: none;
     display: flex;
     align-items: center;
-    padding: 0 30px;
+    padding: 0 40px; /* 轴线两端的缩进 */
 }
 
 .timeline-axis-line {
@@ -517,11 +517,9 @@ body {
 }
 
 .timeline-scroll {
-    display: flex;
-    gap: 14px;
+    display: block; /* 改为 block 以便子元素 inline-flex 生效 */
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 35px 10px 20px; /* 增加顶部边距，防止发光特效被遮挡 */
     scrollbar-width: thin;
     scrollbar-color: #e0b8c5 transparent;
     -webkit-overflow-scrolling: touch;
@@ -530,6 +528,16 @@ body {
     position: relative;
     touch-action: pan-y;
     min-height: 90px;
+    text-align: center; /* 确保内容不足时居中（如果有必要） */
+}
+
+/* 新增：内部包装容器，其宽度严格等于内容宽度 */
+.timeline-nodes-inner {
+    display: inline-flex;
+    position: relative;
+    padding: 35px 20px 20px;
+    gap: 14px;
+    min-width: min-content;
 }
 
 .timeline-scroll:active {
