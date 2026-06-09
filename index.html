@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎂 生日快乐，我的爱人</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>🎂 生日快乐，汤圆</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
 
@@ -16,9 +16,9 @@
             <div class="content-wrapper">
                 <div class="birthday-cake-icon" id="cakeIcon" title="点我~">🎂</div>
                 <h1 class="title-main">生 日 快 乐</h1>
-                <p class="subtitle">致我心中最特别的人 ✨</p>
+                <p class="subtitle">致我心中最特别的人——汤圆 ✨</p>
                 <button class="btn-enter" id="btnEnter" aria-label="进入下一页">
-                    💝 点击开启惊喜
+                    开启惊喜
                 </button>
                 <p class="click-hint">👆 点一下上面的蛋糕也可以哦</p>
             </div>
@@ -35,7 +35,7 @@
                     <span class="line">我爱你，胜过一切言语。💕</span>
                 </div>
                 <button class="btn-to-timeline" id="btnToTimeline" aria-label="查看时间轴">
-                    📖 回顾我们的时光
+                    查看时光
                 </button>
                 <p class="click-hint">👆 也可以点一下爱心哦</p>
             </div>
@@ -44,7 +44,11 @@
         <div class="page page-hidden page-3" id="page3">
             <div class="timeline-header">
                 <h2>📅 我们的一年</h2>
-                <p class="sub-header">点击每个月份，查看我们的甜蜜回忆</p>
+                <p class="sub-header">点击每个坐标，查看我们的回忆</p>
+            </div>
+            <div class="timeline-axis" aria-hidden="true">
+                <span class="timeline-axis-label">时间轴</span>
+                <span class="timeline-axis-line"></span>
             </div>
             <div class="timeline-outer" id="timelineOuter">
                 <div class="timeline-scroll" id="timelineScroll"></div>
@@ -56,14 +60,14 @@
                 <div class="detail-date"></div>
             </div>
             <div class="timeline-nav-btns">
-                <button class="btn-nav" id="btnPrev" aria-label="上一个" title="上一个回忆">◀</button>
+                <button class="btn-nav" id="btnPrev" aria-label="上一个" title="上一个回忆"><</button>
                 <button class="btn-auto-play" id="btnAutoPlay" aria-label="自动播放" title="自动播放回忆">
-                    ▶ 自动播放
+                    自动播放
                 </button>
-                <button class="btn-nav" id="btnNext" aria-label="下一个" title="下一个回忆">▶</button>
+                <button class="btn-nav" id="btnNext" aria-label="下一个" title="下一个回忆">></button>
             </div>
             <button class="btn-back-top" id="btnBackTop" aria-label="回到开头">
-                🔝 回到祝福页
+                回到祝福页
             </button>
         </div>
     </div>

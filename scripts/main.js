@@ -23,6 +23,28 @@
     let autoPlayInterval = null;
     let isAutoPlaying = false;
 
+    function isTimelineDisabled(index) {
+        return Boolean(timelineData[index] && timelineData[index].disabled);
+    }
+
+    function findFirstEnabledIndex() {
+        return timelineData.findIndex(item => !item.disabled);
+    }
+
+    function findNextEnabledIndex(startIndex, direction) {
+        let index = startIndex;
+        for (let step = 0; step < timelineData.length; step++) {
+            index += direction;
+            if (index < 0 || index >= timelineData.length) {
+                return -1;
+            }
+            if (!isTimelineDisabled(index)) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
     function spawnHeart() {
         const heart = document.createElement('span');
         heart.className = 'falling-heart';
@@ -194,15 +216,24 @@
         timelineData.forEach((data, index) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'timeline-node-wrapper';
+            if (data.disabled) {
+                wrapper.classList.add('is-disabled');
+                wrapper.setAttribute('aria-disabled', 'true');
+                wrapper.setAttribute('tabindex', '-1');
+            } else {
+                wrapper.setAttribute('tabindex', '0');
+            }
             wrapper.setAttribute('data-index', index);
             wrapper.innerHTML = `
                     <div class="timeline-node-dot">${data.emoji}</div>
                     <span class="timeline-node-label">${data.month}</span>
                 `;
-            wrapper.addEventListener('click', () => {
-                setActiveTimelineNode(index);
-                scrollToNode(index);
-            });
+            if (!data.disabled) {
+                wrapper.addEventListener('click', () => {
+                    setActiveTimelineNode(index);
+                    scrollToNode(index);
+                });
+            }
             timelineScroll.appendChild(wrapper);
         });
     }
@@ -251,8 +282,8 @@
     }
 
     function navigateTimeline(direction) {
-        const newIndex = activeTimelineIndex + direction;
-        if (newIndex >= 0 && newIndex < timelineData.length) {
+        const newIndex = findNextEnabledIndex(activeTimelineIndex, direction);
+        if (newIndex !== -1) {
             setActiveTimelineNode(newIndex);
             scrollToNode(newIndex);
         }
@@ -260,8 +291,11 @@
 
     function initTimeline() {
         buildTimelineNodes();
-        setActiveTimelineNode(0);
-        setTimeout(() => scrollToNode(0), 300);
+        const firstEnabledIndex = findFirstEnabledIndex();
+        if (firstEnabledIndex !== -1) {
+            setActiveTimelineNode(firstEnabledIndex);
+            setTimeout(() => scrollToNode(firstEnabledIndex), 300);
+        }
     }
 
     btnPrev.addEventListener('click', () => navigateTimeline(-1));
@@ -271,13 +305,18 @@
         if (isAutoPlaying) return;
         isAutoPlaying = true;
         btnAutoPlay.classList.add('playing');
-        btnAutoPlay.innerHTML = '⏸ 停止播放';
+        btnAutoPlay.textContent = '停止播放';
         autoPlayInterval = setInterval(() => {
-            if (activeTimelineIndex < timelineData.length - 1) {
-                navigateTimeline(1);
+            const nextIndex = findNextEnabledIndex(activeTimelineIndex, 1);
+            if (nextIndex !== -1) {
+                setActiveTimelineNode(nextIndex);
+                scrollToNode(nextIndex);
             } else {
-                setActiveTimelineNode(0);
-                scrollToNode(0);
+                const firstEnabledIndex = findFirstEnabledIndex();
+                if (firstEnabledIndex !== -1) {
+                    setActiveTimelineNode(firstEnabledIndex);
+                    scrollToNode(firstEnabledIndex);
+                }
             }
         }, 2800);
     }
@@ -285,7 +324,7 @@
     function stopAutoPlay() {
         isAutoPlaying = false;
         btnAutoPlay.classList.remove('playing');
-        btnAutoPlay.innerHTML = '▶ 自动播放';
+        btnAutoPlay.textContent = '自动播放';
         if (autoPlayInterval) {
             clearInterval(autoPlayInterval);
             autoPlayInterval = null;
