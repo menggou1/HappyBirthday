@@ -15,24 +15,46 @@
     const btnNext = document.getElementById('btnNext');
     const heartsLayer = document.getElementById('heartsLayer');
     const sparklesLayer = document.getElementById('sparklesLayer');
+    const musicToggle = document.getElementById('musicToggle');
+    const backgroundMusic = document.getElementById('backgroundMusic');
 
     let currentPage = 1;
     let isTransitioning = false;
     let activeTimelineIndex = 0;
+    let musicStarted = false;
+
+    function normalizeTimelineItem(item) {
+        if (Array.isArray(item.events)) {
+            return item;
+        }
+
+        return {
+            month: item.month,
+            disabled: item.disabled,
+            events: [{
+                title: item.title || item.month,
+                desc: item.desc || '',
+                date: item.date || '',
+                emoji: item.emoji || '✨',
+            }],
+        };
+    }
+
+    const normalizedTimelineData = timelineData.map(normalizeTimelineItem);
 
     function isTimelineDisabled(index) {
-        return Boolean(timelineData[index] && timelineData[index].disabled);
+        return Boolean(normalizedTimelineData[index] && normalizedTimelineData[index].disabled);
     }
 
     function findFirstEnabledIndex() {
-        return timelineData.findIndex(item => !item.disabled);
+        return normalizedTimelineData.findIndex(item => !item.disabled);
     }
 
     function findNextEnabledIndex(startIndex, direction) {
         let index = startIndex;
-        for (let step = 0; step < timelineData.length; step++) {
+        for (let step = 0; step < normalizedTimelineData.length; step++) {
             index += direction;
-            if (index < 0 || index >= timelineData.length) {
+            if (index < 0 || index >= normalizedTimelineData.length) {
                 return -1;
             }
             if (!isTimelineDisabled(index)) {
@@ -117,6 +139,27 @@
             spawnSparkle(e.clientX + offsetX, e.clientY + offsetY);
         }
     });
+
+    function updateMusicButton() {
+        if (!musicToggle || !backgroundMusic) return;
+        const isMuted = backgroundMusic.muted;
+        musicToggle.textContent = isMuted ? '有声' : '静音';
+        musicToggle.setAttribute('aria-pressed', String(isMuted));
+        musicToggle.setAttribute('aria-label', isMuted ? '取消静音' : '开启静音');
+    }
+
+    function startBackgroundMusic() {
+        if (!backgroundMusic || musicStarted) return;
+        musicStarted = true;
+        backgroundMusic.loop = true;
+        backgroundMusic.play().catch(() => {
+            musicStarted = false;
+        });
+        updateMusicButton();
+    }
+
+    document.addEventListener('pointerdown', startBackgroundMusic, { passive: true });
+    document.addEventListener('keydown', startBackgroundMusic);
 
     function switchPage(fromPageNum, toPageNum) {
         if (isTransitioning) return;
@@ -219,7 +262,7 @@
         axisTrack.innerHTML = '<span class="timeline-axis-line"></span>';
         nodesInner.appendChild(axisTrack);
 
-        timelineData.forEach((data, index) => {
+        normalizedTimelineData.forEach((data, index) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'timeline-node-wrapper';
             if (data.disabled) {
@@ -260,11 +303,11 @@
     }
 
     function updateDetailCard(index) {
-        const data = timelineData[index];
+        const data = normalizedTimelineData[index];
         timelineDetail.innerHTML = '';
         
         if (!data || !data.events || data.events.length === 0) {
-            timelineDetail.innerHTML = '<div class="detail-desc">暂时没有回忆哦~</div>';
+            timelineDetail.innerHTML = '<div class="detail-desc">暂时没有内容哦~</div>';
             return;
         }
 
@@ -327,6 +370,17 @@
 
     btnPrev.addEventListener('click', () => navigateTimeline(-1));
     btnNext.addEventListener('click', () => navigateTimeline(1));
+    if (musicToggle && backgroundMusic) {
+        musicToggle.addEventListener('click', () => {
+            startBackgroundMusic();
+            backgroundMusic.muted = !backgroundMusic.muted;
+            if (!backgroundMusic.muted) {
+                backgroundMusic.play().catch(() => {});
+            }
+            updateMusicButton();
+        });
+        updateMusicButton();
+    }
 
     const dragState = {
         active: false,

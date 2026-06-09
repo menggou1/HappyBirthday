@@ -114,6 +114,42 @@ body {
     z-index: 0;
 }
 
+.music-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 125, 146, 0.55);
+    background: rgba(255, 255, 255, 0.92);
+    color: #8b3a50;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 24px rgba(180, 120, 140, 0.18);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 50;
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), background 0.2s ease;
+}
+
+.music-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(180, 120, 140, 0.24);
+    background: rgba(255, 247, 249, 0.96);
+}
+
+.music-toggle:active {
+    transform: scale(0.94);
+}
+
+.music-toggle[aria-pressed="true"] {
+    background: rgba(255, 244, 246, 0.98);
+    color: #6b3040;
+}
+
 .falling-heart {
     position: absolute;
     animation: fallHeart linear forwards;
